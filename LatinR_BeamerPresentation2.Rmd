@@ -1,0 +1,392 @@
+---
+title: "Aplicação do método do julgamento holístico e do
+método tradicional para a criação de matrizes
+paritárias no processo de análise hierárquica"
+subtitle: "<br/>  Uma
+análise comparativa com o uso do pacote AHPWR"
+author: "Alcoforado, L., Longo, O. & Levy, A."
+institute: "Academia da Força Aérea/ Universidade Federal Fluminense"
+date: "outubro de 2023"
+header-includes:
+  - \pgfdeclareimage[height=.75cm]{logoAFA}{logos.png}
+  - \logo{\pgfuseimage{logoAFA}}
+output:
+  beamer_presentation:
+  includes:
+      in_header: mystyle.tex
+  extra_dependencies: animate
+  keep_tex: true  
+theme: "Antibes" 
+---
+
+
+
+```{r,echo=FALSE,eval=TRUE,results='hide',warning=FALSE,message=FALSE}
+
+if(!require(ggplot2)){install.packages("ggplot2")}
+library(ggplot2)
+if(!require(tidyverse)){install.packages("tidyverse")}
+library(tidyverse)
+
+if(!require(dplyr)){install.packages("dplyr")}
+#Se der erro de latex, precisa instalar uyma versão. usei
+#tinytex::install_tinytex()
+library("knitr")
+library("tinytex")
+
+```
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+
+#knitr::opts_chunk$set(echo = TRUE)
+file2=getwd()
+file2
+file=paste(file2,"FigurasLatinR2023/",sep = "/")
+file
+```
+
+
+# guión de presentación
+
+* Que hacemos
+* Introducción
+    * AHP
+* Objetivos
+* Aplicaciones
+* Resultados
+* Consideraciones finales
+  
+# Difusión de R en la comunidad: Libros y Seminarios
+\begin{minipage}{\textwidth}
+\begin{minipage}{.32\textwidth}
+```{r, echo=FALSE, out.width = '70%'}
+
+knitr::include_graphics("FigurasLatinR2023/capa_livro_introducao.jpg")
+
+```
+\end{minipage}
+\begin{minipage}{.32\textwidth}
+```{r, echo=FALSE, out.width = '70%'}
+
+knitr::include_graphics("FigurasLatinR2023/capa_livro_visualizacao.jpg")
+
+```
+\end{minipage}
+\begin{minipage}{.32\textwidth}
+```{r, echo=FALSE, out.width = '70%'}
+
+knitr::include_graphics("FigurasLatinR2023/capa_livro_AltaBooks.jpg")
+
+```
+\end{minipage}
+
+
+\begin{minipage}{.32\textwidth}
+```{r, echo=FALSE, out.width = '70%'}
+
+knitr::include_graphics("FigurasLatinR2023/capa_livro_mandalas.png")
+
+```
+\end{minipage}
+\begin{minipage}{.32\textwidth}
+
+```{r, echo=FALSE, out.width = '80%'}
+
+knitr::include_graphics("FigurasLatinR2023/capa_livro_AHP.png")
+
+```
+
+\end{minipage}
+\begin{minipage}{.32\textwidth}
+
+```{r, echo=FALSE, out.width = '80%'}
+
+knitr::include_graphics("FigurasLatinR2023/sticker_ser.png")
+
+```
+\end{minipage}
+\end{minipage}
+
+# Paquete AHPWR: Compute Analytic Hierarchy Process
+
+<https://cran.r-project.org/web/packages/AHPWR/index.html>
+
+<https://cran.r-project.org/web/packages/AHPWR/vignettes/Intro_to_AHP.html>
+
+
+```{r, echo=FALSE, out.width = '90%'}
+
+knitr::include_graphics("FigurasLatinR2023/vignete_AHPWR.png")
+```
+
+# Un libro con aplicaciones en ingeniería civil
+
+\begin{minipage}{\textwidth}
+\begin{minipage}{.45\textwidth}
+```{r, echo=FALSE, out.width = '100%'}
+
+knitr::include_graphics("FigurasLatinR2023/capa_livro_AHP.png")
+
+```
+\end{minipage}
+\begin{minipage}{.45\textwidth}
+```{r, echo=FALSE, out.width = '110%'}
+
+knitr::include_graphics("FigurasLatinR2023/sumario1_livroahp.png")
+
+```
+\end{minipage}
+\end{minipage}
+
+
+
+
+
+# Introducción
+
+*AHP (Proceso de jerarquía analítica): método para la toma de decisiones creado por Saaty*
+
+* Descomponer el problema en una jerarquía de subproblemas más simple
+* Compare los elementos de la jerarquía en pares usando una escala numérico o verbal
+* Sintetizar los resultados en un ranking de las alternativas
+* Diversas áreas de aplicación como gobierno, negocios, industria, atención médica y educación
+
+# Limitaciones de uso de AHP
+
+* dependencia de la elección de la escala numérica
+* la dificultad de hacer frente a las incoherencias en las sentencias
+* la necesidad de revisar las sentencias cuando se agregan nuevos elementos
+
+# Objetivo
+
+* Presentar el método de juicio holístico y compararlo con el método tradicional de AHP, usando el paquete \textrm{\large{AHPWR}}
+
+# Propuesta del Método de Juicio Holístico
+
+* forma de construir matrices de paridad en AHP, reduciendo 
+la inconsistencia y la complejidad de los juicios. 
+
+* No compare los elementos par por par usando la escala Saaty, sino que asigne pesos a los elementos directamente, usando una escala de 0 a 10.
+
+* Las ecuaciones matemáticas propuestas por Godoi (2014) compararán los pesos asignados, creando las matrices de juicio.
+
+# Vantagens
+
+* Requiere menos juicios subjetivos.
+
+* Reducir la posibilidad de inconsistencias debido a juicios hechos por evaluadores inexpertos.
+
+# Paquete AHPWR 
+
+* Funciones para llevar a cabo el juicio de Saaty y el juicio holístico de Godoi
+
+```{r,eval=FALSE,echo=TRUE}
+install.packages("AHPWR")
+AHPWR::flow_chart(names = NULL, c = 3, a = 3)
+julgamentos = AHPWR::matriz_julgamento(n_comp = 3,
+                                       CR = TRUE,
+                                       n_matrix = 4)
+matriz1 = AHPWR::matrix_ahp(criterios,
+                            ponderacion_sentencias)
+AHPWR::ahp_geral(base)
+
+
+
+
+    
+```
+
+
+
+# Aplicación
+
+- **Gol:** Eligir el mejor proyecto de ingeniería civil.
+
+- **Criterios:** C1 - Experiencia del proponente; C2 - Técnica de ejecución; C3 - Plazo de entrega.
+
+- **Alternativas:** tres propuestas presentadas A1, A2 y A3.
+
+
+# Árbol jerárquico
+
+```{r}
+AHPWR::flow_chart(names=NULL, c=3, a=3)
+```
+
+# Comparaciones tradicionales
+
+- Método AHP tradicional: hacer comparaciones por pares entre los 3 criterios y entre las 3 alternativas, fijando todos los criterios, dando lugar a 12 comparaciones: 1-C1xC2; 2-C1xC3; 3-C2xC3; fixa C1 4-A1xA2; 5-A1xA3; 6-A2xA3; fixa C2 7-A1xA2; 8-A1xA3; 9-A2xA3; fixa C3 10-A1xA2; 11-A1xA3; 12-A2xA3.
+
+- Comparaciones 1, 2 y 3 => Matriz 1; 4, 5 y 6 => Matriz 2; 7, 8 y 9 => Matriz 3; 10, 11 y 12 => Matriz 4.
+
+- Utilice la escala fundamental de Saaty, valores del 1 al 9
+
+- Si C1 se juzga 5 veces más importante que C2, entonces C2 tendrá 1/5 de la importancia de C1 (reciprocidad)
+
+# Comparaciones tradicionales con AHPWR
+
+```{r eval=FALSE}
+julgamentos=AHPWR::matriz_julgamento(n_comp=3,
+                                     CR=TRUE,n_matrix=4)
+
+```
+
+
+```{r, echo=FALSE, out.width = '100%'}
+
+knitr::include_graphics("FigurasLatinR2023/Fig1-consoleahp.png")
+
+```
+
+# Mirando las matrices
+
+\tiny Cuatro matrices de juicio: M1 compara criterios, M2 a M4 compara alternativas fijando cada criterio C1, C2 y C3. 
+```{r echo=FALSE}
+load("julgamentos.RData")
+julgamentos$Matrix[1:4]
+```
+
+# Evaluando los juicios
+
+Presencia de juicios inconsistentes porque CR > 0.1
+
+CR(M1) = 0.53 > 0.1 => criterios comparados de manera inconsistente
+
+CR(M2) = 0.22 > 0.1 => alternativas comparadas de manera inconsistente en criterio 1
+
+CR(M4) = 0.63 > 0.1 => alternativas comparadas de manera inconsistente en criterio 3
+```{r echo=FALSE}
+load("julgamentos.RData")
+julgamentos$CR
+```
+
+# Fracaso humano en el juicio
+
+La matriz M4 nos muestra que A1 y A2 son igualmente importantes, pero A3 es mucho menos.Así que A2 no puede ser más pequeño que A3, sino más grande.
+
+```{r echo=FALSE}
+load("julgamentos.RData")
+julgamentos$Matrix[4]
+julgamentos$CR[4]
+```
+
+
+
+
+# Método de Juicio Holístico
+
+- Reduce la inconsistencia y complejidad de los juicios.
+
+- Asignar pesos (0 a 10) a los elementos directamente según su orden de importancia.
+
+- Los pesos son comparados por expressiones matematicas
+
+
+$$a_{ij} = w_i-w_j +1$$,  si $w_i \ge w_j$; o
+$$a_{ij} = \frac{1}{(w_j-w_i +1)}$$, si $w_i < w_j$.
+
+$w_1, ..., w_k$ los pesos de los k elementos a comparar.
+
+# Asignación de los pesos - criterios
+
+Se consideró que los criterios C1, C2 y C3 tienen pesos 4, 5, y 1, respectivamente, según su importancia.
+
+La función *matrix_ahp* proporciona los cálculos comparativos que resultan en la matriz de juicio.
+
+
+```{r}
+criterios = paste0("C", 1:3) #nomeando os critérios
+yc = c(4, 5, 1) #pesos atribuídos aos critérios
+m1 = AHPWR::matrix_ahp(criterios,yc)
+m1
+```
+
+# Asignación de los pesos - alternativas
+
+\small
+```{r}
+alternativas = paste0("A", 1:3) #nomeando as alternativas
+yac1 = c(3, 2, 5) #pesos das alternativas a luz do critério 1
+yac2 = c(9, 4.4, 8) #pesos das alternativas a luz do critério 2
+yac3 = c(2.5, 4, 3.5)#pesos das alternativas a luz do critério 3
+m2 = AHPWR::matrix_ahp(alternativas,yac1)
+m3 = AHPWR::matrix_ahp(alternativas,yac2)
+m4 = AHPWR::matrix_ahp(alternativas,yac3)
+base = list(m1,m2,m3,m4)
+```
+
+# Mirando la base
+
+\tiny
+```{r}
+base
+```
+# Juicios consistentes 
+
+porque ahora CR < 0.1
+
+```{r}
+sapply(base,AHPWR::CR)
+```
+
+# Ventajas observadas
+
+- Requiere menos juicios subjetivos y menos interacción que el método tradicional AHP.
+
+- Puede aumentar la motivación y la atención de los evaluadores.
+
+- Puede reducir la posibilidad de inconsistencias debido a juicios hechos por evaluadores inexpertos.
+
+
+# Obteniendo los pesos globales - julgamentos consistentes
+
+```{r}
+AHPWR::ahp_geral(base)
+```
+
+
+# Método AHP tradicional
+
+- Positivo: método consagrado y ampliamente utilizado, permite expresar preferencias o importancia mediante escala numérica o verbal, sintetiza los resultados en un ranking de las alternativas.
+- Negativo: depende de la elección de la escala numérica, tiene dificultades para lidiar con inconsistencias en los juicios, necesita revisar los juicios cuando se agregan nuevos elementos, requiere muchas comparaciones entre pares.
+
+# Método de juicio holístico
+
+- Positivo: requiere menos juicios subjetivos y menos interacción, puede aumentar la motivación y la atención de los evaluadores, puede reducir la posibilidad de inconsistencias por juicios inexpertos.
+
+- Negativo: todavía es poco conocido y aplicado en la práctica, puede requerir mayor cuidado en la atribución de pesos a los elementos, para evitar distorsiones o vies en la decisión.
+
+# Consideraciones finales
+
+- Objetivo: se presentó el método de juicio holístico y se comparó con el método tradicional de AHP, utilizando el paquete AHPWR en R.
+
+- Método: El método de juicio holístico asigna pesos a los elementos utilizando una escala de 0 a 10 y calcula los valores de la matriz de comparación de paridad con fórmulas simples.
+
+- Resultados: el método de juicio holístico demostró ser más flexible, robusto y fácil de usar que el método tradicional de AHP, además de producir resultados consistentes y confiables.
+
+- Consideraciones: el método de juicio holístico fue una alternativa viable y eficiente para la toma de decisiones multicriterio utilizando AHP.
+
+
+
+
+# Referências 
+\tiny
+Alcoforado, Luciane Ferreira, and Orlando Celso Longo. 2022. Introduction to AHPWR Package. https://cran.r-project. org/web/packages/AHPWR/vignettes/Intro_to_AHP.html.
+
+Alcoforado, Luciane Ferreira, Lyncoln Sousa, and Orlando Celso Longo. 2022. AHPWR: Compute Analytic Hierarchy Process. https://CRAN.R-project.org/package=AHPWR.
+
+Godoi, Wagner da Costa. 2014. “Método de Construção Das Matrizes de Julgamento Paritário No AHP – Método de Julgamento Holístico.” Revista Gestão Industrial 10 (3): 474–93. https://doi.org/10.3895/gi.v10i3.1970.
+
+Saaty, L. G., T. L.and Vargas. 2012. Models, Methods, Concepts and Applications of the Analytic Hierarchy Process. New York: Springer.
+
+Saaty, Thomas L. 1980. The Analytic Hierarchy Process. New York: McGraw-Hill
+
+
+
+# Obrigado!
+
+
+* contato: lucianea@id.uff.br; orlandolongo@gmail.com; alevy@id.uff.br
+
+
+ 
